@@ -1,8 +1,56 @@
+import React from 'react';
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { gql } from "@apollo/client";
+import client from "./../apollo-client";
 
 export default function Home() {
+  const [countries, setcountries] = React.useState([]);
+  const [loading, setloading] = React.useState(false);
+  React.useEffect(async() => {
+  //  handleCountry()
+  }, []);
+  const handleCountry = async() =>{
+    const { data,loading,error } = await client.query({
+      query: gql`
+        query Countries {
+          countries {
+            code
+            name
+            emoji
+          }
+        }
+      `,
+    });
+    if(error) console.log(error)
+    if(loading) setloading(true)
+    if(data)setcountries(data.countries);setloading(false)
+  }
+  const handleState = async(countryCode) =>{
+    const { data,loading,error } = await client.query({
+      query: gql`
+        query Countries ($code: ID!){
+          country(code: $code) {
+            states {
+              code
+              name
+              country {
+                name
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        "code": countryCode
+      }
+    });
+    if(error) console.log(error)
+    if(loading) setloading(true)
+    if(data)setcountries(data.country.states);setloading(false)
+  }
+  if(loading) return <div>Loading</div>
   return (
     <div className={styles.container}>
       <Head>
@@ -22,7 +70,16 @@ export default function Home() {
         </p>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
+          {countries.length>0 && countries.map((ele,index)=>{
+            return <a onClick={()=>ele.country?handleCountry():handleState(ele.code)} key={index} className={styles.card}>
+            <h2>{ele.name} &rarr;</h2>
+            <p>{`${ele.code}`}</p>
+          </a>
+          })}
+          {countries.length===0 && <><a onClick={()=>handleCountry()} className={styles.card}>
+            <h2>No State Here &rarr;</h2>
+          </a></>}
+          {/* <a href="https://nextjs.org/docs" className={styles.card}>
             <h2>Documentation &rarr;</h2>
             <p>Find in-depth information about Next.js features and API.</p>
           </a>
@@ -48,7 +105,7 @@ export default function Home() {
             <p>
               Instantly deploy your Next.js site to a public URL with Vercel.
             </p>
-          </a>
+          </a> */}
         </div>
       </main>
 
