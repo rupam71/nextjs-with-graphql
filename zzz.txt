@@ -1,0 +1,38 @@
+Total 5 type
+    ID
+    String
+    Int
+    Boolean
+    Float
+
+custom type
+    type User {
+        id: ID!
+        frineds [User]
+        videosPosted: [Video]
+    }
+    type Video {
+        id: ID!
+        title: String
+        description: String
+    }
+
+type could be exist or null.                        name: String
+But ! make sure its must exists.                    id: ID!
+if you have must frineds                            friends: [User]!
+if your friends must be User                        friends: [User!]
+if you must have friends and they must be User      friends: [User!]!
+
+enum
+    for a property only few option will available.  
+    enum Nationalily{
+        canada,
+        brazil,
+        india,
+        france,
+        chile
+    }
+    type User {
+        id:ID!
+        nationality: Nationalily!
+    }

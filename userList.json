@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "Alom",
+        "age": 51,
+        "married": true,
+        "login": "Today",
+        "avatar_url": "avt_01"
+    },
+    {
+        "id": 2,
+        "name": "Kolom",
+        "age": 52,
+        "married": true,
+        "login": "Yesterday",
+        "avatar_url": "avt_02"
+    }
+]
