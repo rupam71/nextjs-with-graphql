@@ -1,5 +1,5 @@
 import axios from "axios";
-import userList from "./../../../userList.json"
+import userList from "./../../../userList2.json"
 
 const resolvers = {
   Query: {
@@ -14,7 +14,7 @@ const resolvers = {
         throw error;
       }
     },
-    getUser: async (_, args) => {
+    getUserByName: async (_, args) => {
       try {
         // const user = await axios.get(
         //   `https://api.github.com/users/${args.name}`
@@ -30,13 +30,57 @@ const resolvers = {
       } catch (error) {
         throw error;
       }
+    },
+    getUserByID: async (parant, args) => {
+      try {
+        console.log('args',args)
+        console.log('args type',args.id)
+        userList.forEach((ele)=> {
+          console.log('typeof ele.id',typeof ele.id)
+          console.log('typeof args.id',typeof args.id)
+          if(ele.id===args.id) console.log('=== same')
+          if(ele.id==args.id) console.log('== same')
+        })
+        const user = userList.filter(ele=>ele.id.toString()===args.id)
+        console.log('user',user[0])
+        return user[0]
+      } catch (error) {
+        throw error;
+      }
     }
   },
   Mutation: {
     createUser(parants,args) {
+      const id = userList.length
       const newUser = args
+      newUser.id = id
       userList.push(newUser)
       return newUser;
+    },
+    createNewUser: (parant, args) => {
+      const user = args.input;
+      console.log(user)
+      const id = userList.length
+      user.id = id
+      userList.push(user);
+      return user
+    },
+    updateUserName: (parant, args) => {
+      const id = args.input.id;
+      const newUserName = args.input.newUserName
+      let userUpdate
+    //  const {id,newUserName} = args.input
+      userList.forEach(user=>{
+        if(user.id.toString() === id) {
+          user.name = newUserName
+          userUpdate = user
+        }
+      })
+      return userUpdate
+    },
+    deleteUser: (parents,args) => {
+      const user = userList.filter(user=>user.id.toString() !== args.id)
+      return user
     }
   }
 };
