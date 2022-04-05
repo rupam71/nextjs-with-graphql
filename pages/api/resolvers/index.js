@@ -79,8 +79,22 @@ const resolvers = {
       return userUpdate
     },
     deleteUser: (parents,args) => {
-      const user = userList.filter(user=>user.id.toString() !== args.id)
-      return user
+      let User, index;
+
+      userList.forEach((user,i)=>{
+        if(user.id.toString() === args.id) {
+          User = user
+          index = i
+        }
+      })
+      
+      if(User){
+        userList.splice(index,1)
+        return User
+      } else {
+        console.log('global else: ')
+        return []
+      }
     }
   }
 };
